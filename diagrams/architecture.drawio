@@ -1,0 +1,135 @@
+<mxfile host="app.diagrams.net" modified="2026-05-21T00:00:00.000Z" agent="5.0" version="21.0.0" type="github">
+  <diagram id="arch-overview" name="Architecture Overview">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="platform-toolkit — Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="560" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ====== PIPELINE PACKAGE ====== -->
+        <mxCell id="pkg-pipeline" value="pipeline/" style="swimlane;fontStyle=1;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;rounded=1;arcSize=5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="320" height="340" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dag" value="DAG&#xa;Custom iterator · topological sort&#xa;layers() generator · affected_by()&#xa;__copy__ / __deepcopy__" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="pkg-pipeline">
+          <mxGeometry x="20" y="50" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="artifact" value="ArtifactCache&#xa;Context manager · transaction()&#xa;stale_entries() generator&#xa;fork() shallow · snapshot() deep" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="pkg-pipeline">
+          <mxGeometry x="20" y="140" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="scheduler" value="JobScheduler&#xa;Min-heap · runnable() generator&#xa;@classmethod from_pipeline()&#xa;@staticmethod estimate_wait()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="pkg-pipeline">
+          <mxGeometry x="20" y="230" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ====== OBSERVABILITY PACKAGE ====== -->
+        <mxCell id="pkg-obs" value="observability/" style="swimlane;fontStyle=1;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;rounded=1;arcSize=5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="420" y="100" width="320" height="340" as="geometry" />
+        </mxCell>
+
+        <mxCell id="collector" value="MetricsCollector&#xa;MetricSeries iterable · Protocol&#xa;sliding retention window&#xa;@classmethod for_pipeline()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="pkg-obs">
+          <mxGeometry x="20" y="50" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aggregator" value="LogAggregator&#xa;parse_stream() generator&#xa;sliding_window() · chain_sources()&#xa;itertools.chain / groupby" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="pkg-obs">
+          <mxGeometry x="20" y="140" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="alerts" value="AlertEngine / AlertRule (ABC)&#xa;ThresholdRule · RateOfChangeRule&#xa;evaluate() generator · cooldown&#xa;@classmethod threshold() factory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="pkg-obs">
+          <mxGeometry x="20" y="230" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ====== INFRA PACKAGE ====== -->
+        <mxCell id="pkg-infra" value="infra/" style="swimlane;fontStyle=1;startSize=30;fillColor=#e1d5e7;strokeColor=#9673a6;rounded=1;arcSize=5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="800" y="100" width="320" height="340" as="geometry" />
+        </mxCell>
+
+        <mxCell id="config" value="Config / ConfigLayer&#xa;MutableMapping protocol&#xa;shallow_clone() · deep_clone()&#xa;diff() generator · fork()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#ae4132;fontSize=11;" vertex="1" parent="pkg-infra">
+          <mxGeometry x="20" y="50" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="drift" value="DriftDetector&#xa;compare() recursive generator&#xa;yield from · pattern matching&#xa;@classmethod for_kubernetes()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#ae4132;fontSize=11;" vertex="1" parent="pkg-infra">
+          <mxGeometry x="20" y="140" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="state" value="StateStore&#xa;Descriptor (_TypedField)&#xa;history() generator · fork() / clone()&#xa;deepcopy isolation on all reads" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#ae4132;fontSize=11;" vertex="1" parent="pkg-infra">
+          <mxGeometry x="20" y="230" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ====== DEMOS ROW ====== -->
+        <mxCell id="demo-pipeline" value="demo_pipeline.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="40" y="490" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="demo-obs" value="demo_observability.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="200" y="490" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="demo-infra" value="demo_infra.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="360" y="490" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ====== TESTS ROW ====== -->
+        <mxCell id="test-dag" value="test_dag.py (12)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="520" y="490" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="test-artifact" value="test_artifact.py (11)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="650" y="490" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="test-infra" value="test_infra.py (24)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="800" y="490" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ====== ARROWS pipeline → demos ====== -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="pkg-pipeline" target="demo-pipeline" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="pkg-pipeline" target="demo-obs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="pkg-obs" target="demo-obs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="pkg-infra" target="demo-infra" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="pkg-pipeline" target="test-dag" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="pkg-pipeline" target="test-artifact" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="pkg-infra" target="test-infra" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ====== LEGEND ====== -->
+        <mxCell id="legend" value="Python Concepts" style="swimlane;fontStyle=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="40" y="580" width="1080" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="Generator / yield / yield from" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="615" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="Iterator / Iterable protocols" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="235" y="615" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="@staticmethod / @classmethod" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="410" y="615" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="copy.copy / copy.deepcopy" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="585" y="615" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5" value="ABC / Protocol / Descriptor" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="615" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg6" value="@dataclass / __slots__ / match" style="rounded=1;fillColor=#e6d0de;strokeColor=#ae4132;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="935" y="615" width="165" height="25" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
