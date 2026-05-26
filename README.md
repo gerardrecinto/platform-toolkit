@@ -1,6 +1,10 @@
 # platform-toolkit
 
+![Platform Toolkit logo](docs/assets/logo.svg)
+
 Python tools I've built and refined across years of running CI/CD at scale — a pipeline DAG engine, streaming observability primitives, and infrastructure config management. Three packages, one repo.
+
+![product demo](docs/assets/demo.gif)
 
 ![pipeline demo](docs/assets/pipeline.gif)
 
@@ -210,3 +214,9 @@ tests/test_dag.py::test_critical_path         PASSED
 ## Requirements
 
 Python 3.12+. No third-party dependencies.
+
+## Product Direction
+
+This repo is a credibility engine and reusable primitive library for bigger products like DevOpsLedger and DevOps MCP. It can also support consulting, workshops, and training around platform engineering patterns.
+
+See [docs/go-to-market.md](docs/go-to-market.md).

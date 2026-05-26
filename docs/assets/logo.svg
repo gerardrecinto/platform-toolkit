@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="260" viewBox="0 0 960 260" role="img" aria-labelledby="title desc">
+  <title id="title">Platform Toolkit logo</title>
+  <desc id="desc">Python platform engineering primitives for CI/CD systems.</desc>
+  <rect width="960" height="260" rx="28" fill="#0b1020"/>
+  <g fill="none" stroke="#a78bfa" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M94 130h92M186 84v92M186 84h112M186 176h112M298 84l76 46-76 46"/>
+    <path d="M420 82h96v96h-96z"/>
+    <path d="M444 106h48M444 132h48M444 158h32"/>
+  </g>
+  <text x="570" y="118" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="800">Platform Toolkit</text>
+  <text x="573" y="160" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="22">DAGs, artifacts, observability, and infra drift</text>
+</svg>
