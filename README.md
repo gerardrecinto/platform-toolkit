@@ -1,5 +1,10 @@
 # platform-toolkit
 
+![CI](https://github.com/gerardrecinto/platform-toolkit/actions/workflows/ci.yml/badge.svg)
+![Release](https://github.com/gerardrecinto/platform-toolkit/actions/workflows/release.yml/badge.svg)
+![Python](https://img.shields.io/badge/Python-3.12%2B-blue?logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
 ![Platform Toolkit logo](docs/assets/logo.svg)
 
 Python tools I've built and refined across years of running CI/CD at scale — a pipeline DAG engine, streaming observability primitives, and infrastructure config management. Three packages, one repo.
@@ -7,6 +12,31 @@ Python tools I've built and refined across years of running CI/CD at scale — a
 ![product demo](docs/assets/demo.gif)
 
 ![pipeline demo](docs/assets/pipeline.gif)
+
+---
+
+## Install
+
+```bash
+pip install platform-toolkit
+```
+
+Or from source:
+
+```bash
+git clone https://github.com/gerardrecinto/platform-toolkit
+cd platform-toolkit
+pip install -e .
+```
+
+The package version is available at runtime:
+
+```python
+import platform_toolkit
+print(platform_toolkit.__version__)  # '0.1.0'
+```
+
+No third-party dependencies. Python 3.12+ only.
 
 ---
 
