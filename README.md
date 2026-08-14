@@ -7,7 +7,7 @@
 
 ![Platform Toolkit logo](docs/assets/logo.svg)
 
-Python tools I've built and refined across years of running CI/CD at scale — a pipeline DAG engine, streaming observability primitives, and infrastructure config management. Three packages, one repo.
+Python tools I've built and refined across years of running CI/CD at scale: a pipeline DAG engine, streaming observability primitives, and infrastructure config management. Three packages, one repo.
 
 ![product demo](docs/assets/demo.gif)
 
@@ -55,62 +55,62 @@ No third-party dependencies. Python 3.12+ only.
 Rather than a feature checklist, here's how each concept appears in the actual code:
 
 **Generators / `yield` / `yield from`**
-- `DAG.layers()` — yields parallel execution batches without materialising the full graph
-- `DAG.affected_by()` — BFS traversal via a generator; callers can short-circuit early
-- `DriftDetector.compare()` — recursive generator using `yield from` to flatten nested diffs
-- `LogAggregator.sliding_window()` — rolling window over a log stream, one list per tick
-- `ArtifactCache.stale_entries()` — lazy eviction scan; nothing allocated until iterated
+- `DAG.layers()`: yields parallel execution batches without materialising the full graph
+- `DAG.affected_by()`: BFS traversal via a generator; callers can short-circuit early
+- `DriftDetector.compare()`: recursive generator using `yield from` to flatten nested diffs
+- `LogAggregator.sliding_window()`: rolling window over a log stream, one list per tick
+- `ArtifactCache.stale_entries()`: lazy eviction scan; nothing allocated until iterated
 
 **Iterator / Iterable protocols (`__iter__`, `__next__`)**
-- `_TopologicalIterator` — Kahn's algorithm implemented as a hand-rolled iterator class
-- `_CacheIterator` — iterates cache entries in creation-time order
-- `MetricSeries` — time-windowed ring buffer iterable; `for m in series` auto-trims stale data
-- `DAG`, `JobScheduler`, `StateStore` — all expose `__iter__` for natural `for` loop usage
+- `_TopologicalIterator`: Kahn's algorithm implemented as a hand-rolled iterator class
+- `_CacheIterator`: iterates cache entries in creation-time order
+- `MetricSeries`: time-windowed ring buffer iterable; `for m in series` auto-trims stale data
+- `DAG`, `JobScheduler`, `StateStore`: all expose `__iter__` for natural `for` loop usage
 
 **`@staticmethod` / `@classmethod`**
-- `DAG.validate_no_cycles()` — pure utility, no instance needed
-- `DAG.from_dict()`, `DAG.merge()` — named constructors
-- `JobScheduler.estimate_wait()` — calculator over a heap snapshot
-- `JobScheduler.from_pipeline()` — deserialises a job spec list
-- `AlertRule.threshold()`, `AlertRule.rate_of_change()` — factory methods on the ABC itself
-- `DriftDetector.for_kubernetes()`, `.for_terraform()` — pre-configured detectors
+- `DAG.validate_no_cycles()`: pure utility, no instance needed
+- `DAG.from_dict()`, `DAG.merge()`: named constructors
+- `JobScheduler.estimate_wait()`: calculator over a heap snapshot
+- `JobScheduler.from_pipeline()`: deserialises a job spec list
+- `AlertRule.threshold()`, `AlertRule.rate_of_change()`: factory methods on the ABC itself
+- `DriftDetector.for_kubernetes()`, `.for_terraform()`: pre-configured detectors
 
 **`copy.copy` / `copy.deepcopy`**
-- `DAG.__copy__` — shallow fork shares `DagNode` references (safe: nodes are frozen)
-- `DAG.__deepcopy__` — full independence for mutation-heavy forks
-- `ArtifactCache.fork()` — shallow copy is 10x cheaper; safe because `Artifact` is frozen
-- `ArtifactCache.snapshot()` — deep copy for true snapshot isolation
-- `Config.snapshot()` vs `Config.fork()` — deep vs shallow with explicit tradeoff comments
-- `StateStore.get()` — always returns a deepcopy; callers can't accidentally corrupt state
+- `DAG.__copy__`: shallow fork shares `DagNode` references (safe: nodes are frozen)
+- `DAG.__deepcopy__`: full independence for mutation-heavy forks
+- `ArtifactCache.fork()`: shallow copy is 10x cheaper; safe because `Artifact` is frozen
+- `ArtifactCache.snapshot()`: deep copy for true snapshot isolation
+- `Config.snapshot()` vs `Config.fork()`: deep vs shallow with explicit tradeoff comments
+- `StateStore.get()`: always returns a deepcopy; callers can't accidentally corrupt state
 
 **`@dataclass` / `__slots__` / frozen**
-- `DagNode` — `@dataclass(slots=True)`: no `__dict__`, hashable, fast attribute access
-- `Artifact` — `@dataclass(slots=True, frozen=True)`: immutable record, safe in sets/dicts
-- `JobResult` — `@dataclass(slots=True)`: tight memory for high-throughput execution logs
-- `ConfigLayer` — manual `__slots__`: minimal overhead when stacking many config layers
+- `DagNode`: `@dataclass(slots=True)`: no `__dict__`, hashable, fast attribute access
+- `Artifact`: `@dataclass(slots=True, frozen=True)`: immutable record, safe in sets/dicts
+- `JobResult`: `@dataclass(slots=True)`: tight memory for high-throughput execution logs
+- `ConfigLayer`: manual `__slots__`: minimal overhead when stacking many config layers
 
 **`Protocol` / `ABC` / descriptors**
-- `MetricBackend` — `@runtime_checkable` Protocol; `MetricsCollector` satisfies it at runtime
-- `AlertRule` — abstract base with `@abstractmethod evaluate()`; forces subclass contract
-- `_TypedField` — full descriptor (`__set_name__`, `__get__`, `__set__`) for type-enforced fields on `StateStore`
+- `MetricBackend`: `@runtime_checkable` Protocol; `MetricsCollector` satisfies it at runtime
+- `AlertRule`: abstract base with `@abstractmethod evaluate()`; forces subclass contract
+- `_TypedField`: full descriptor (`__set_name__`, `__get__`, `__set__`) for type-enforced fields on `StateStore`
 
-**Pattern matching (`match`/`case` — Python 3.10+)**
-- `DriftResult.__str__` — renders drift output by matching on `DriftType` enum
-- `DriftDetector.patch()` — dispatch on drift type without a chain of if/elif
+**Pattern matching (`match`/`case`: Python 3.10+)**
+- `DriftResult.__str__`: renders drift output by matching on `DriftType` enum
+- `DriftDetector.patch()`: dispatch on drift type without a chain of if/elif
 
 **Context managers**
-- `ArtifactCache.transaction()` — `@contextmanager` for atomic batch writes; rolls back on exception
-- `ExecutionContext` — async context manager; cleans up execution state on exit
+- `ArtifactCache.transaction()`: `@contextmanager` for atomic batch writes; rolls back on exception
+- `ExecutionContext`: async context manager; cleans up execution state on exit
 
 **`asyncio` / async generators**
-- `JobExecutor.run_layer()` — async generator that yields results as each job completes, not after all finish
-- `ExecutionContext` — `async with` pattern for session lifecycle
+- `JobExecutor.run_layer()`: async generator that yields results as each job completes, not after all finish
+- `ExecutionContext`: `async with` pattern for session lifecycle
 
 **`MutableMapping`**
-- `Config` and `ConfigLayer` — implement full mapping protocol so they work as drop-in dict replacements in any framework
+- `Config` and `ConfigLayer`: implement full mapping protocol so they work as drop-in dict replacements in any framework
 
 **`Generic` / `TypeVar`**
-- `_TypedField[T]` — generic descriptor parameterised on the field type
+- `_TypedField[T]`: generic descriptor parameterised on the field type
 
 ---
 
