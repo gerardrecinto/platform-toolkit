@@ -88,6 +88,16 @@ class AlertRule(ABC):
     ) -> "RateOfChangeRule":
         return RateOfChangeRule(name=name, metric_name=metric, max_delta=max_delta, severity=severity)
 
+    @classmethod
+    def absence(
+        cls,
+        name: str,
+        metric: str,
+        after_seconds: float,
+        severity: AlertSeverity = AlertSeverity.CRITICAL,
+    ) -> "AbsenceRule":
+        return AbsenceRule(name=name, metric_name=metric, after_seconds=after_seconds, severity=severity)
+
     def with_cooldown(self, seconds: float) -> "AlertRule":
         """Fluent setter for cooldown duration — returns self."""
         self._cooldown = seconds
@@ -167,6 +177,47 @@ class RateOfChangeRule(AlertRule):
                 threshold=self.max_delta,
             )
         return None
+
+
+class AbsenceRule(AlertRule):
+    """
+    Dead man's switch — fires when a metric hasn't reported in over
+    after_seconds. Useful for detecting a job or agent that stopped
+    reporting entirely, which threshold/rate rules can't catch since
+    they only ever look at samples that exist.
+    """
+
+    def __init__(
+        self,
+        name: str,
+        metric_name: str,
+        after_seconds: float,
+        severity: AlertSeverity,
+    ) -> None:
+        super().__init__(name, severity)
+        self.metric_name = metric_name
+        self.after_seconds = after_seconds
+
+    def evaluate(self, series: MetricSeries) -> Alert | None:
+        if self._in_cooldown():
+            return None
+        latest = series.latest
+        now = time.time()
+        if latest is None:
+            age = self.after_seconds
+        else:
+            age = now - latest.timestamp
+            if age <= self.after_seconds:
+                return None
+        self._mark_fired()
+        return Alert(
+            rule_name=self.name,
+            severity=self.severity,
+            message=f"{self.metric_name} has not reported in {age:.0f}s",
+            metric_name=self.metric_name,
+            observed_value=age,
+            threshold=self.after_seconds,
+        )
 
 
 class AlertEngine:
