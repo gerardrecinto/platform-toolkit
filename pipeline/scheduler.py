@@ -70,17 +70,27 @@ class JobScheduler:
     # ------------------------------------------------------------------ #
 
     def runnable(self, now: float | None = None) -> Generator[_ScheduledJob, None, None]:
-        """Yield jobs whose scheduled_at has passed, in priority order."""
+        """
+        Yield jobs whose scheduled_at has passed, in priority order, up to
+        the available concurrency slots. Each yielded job is marked running;
+        call mark_done() once it finishes to free its slot.
+        """
         t = now if now is not None else time.monotonic()
         temp: list[_ScheduledJob] = []
         while self._heap and self._heap[0].scheduled_at <= t:
             job = heapq.heappop(self._heap)
             if len(self._running) < self._max_concurrent:
+                self._running.add(job.job_id)
                 yield job
             else:
                 temp.append(job)
         for j in temp:
             heapq.heappush(self._heap, j)
+
+    def mark_done(self, job_id: str) -> None:
+        """Free the concurrency slot held by job_id and record it as completed."""
+        self._running.discard(job_id)
+        self._completed.append(job_id)
 
     def by_tag(self, tag: str) -> Generator[_ScheduledJob, None, None]:
         """Generator filter — yields only queued jobs with the given tag."""
