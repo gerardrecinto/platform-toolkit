@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "platform-toolkit"
-version = "1.0.1"
+version = "1.1.0"
 description = "Pipeline engine, observability, and infra config tools for platform engineering"
 requires-python = ">=3.12"
 dependencies = []

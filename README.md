@@ -29,11 +29,12 @@ cd platform-toolkit
 pip install -e .
 ```
 
-The package version is available at runtime:
+There's no single `platform_toolkit` import — each package is standalone.
+The version lives on `pipeline`:
 
 ```python
-import platform_toolkit
-print(platform_toolkit.__version__)  # '0.1.0'
+import pipeline
+print(pipeline.__version__)  # '1.1.0'
 ```
 
 No third-party dependencies. Python 3.12+ only.
@@ -138,7 +139,7 @@ platform-toolkit/
 │   ├── demo_observability.py
 │   ├── demo_infra.py
 │   └── record_gifs.sh
-├── tests/              47 tests, all passing
+├── tests/              89 tests, all passing
 └── diagrams/
     └── architecture.drawio
 ```
@@ -224,6 +225,17 @@ for alert in engine.evaluate(series_map):
     print(alert)
 ```
 
+`AlertRule.absence()` is a dead man's switch: it fires when a metric
+stops reporting entirely, which threshold and rate-of-change rules
+can't catch since they only look at samples that exist.
+
+```python
+engine.register(
+    AlertRule.absence("heartbeat-lost", "agent_heartbeat", after_seconds=90),
+    "agent_heartbeat",
+)
+```
+
 ---
 
 ## Tests
@@ -236,7 +248,7 @@ tests/test_dag.py::test_layers                PASSED
 tests/test_dag.py::test_affected_by           PASSED
 tests/test_dag.py::test_critical_path         PASSED
 ...
-======================== 47 passed in 0.16s =========================
+======================== 89 passed in 0.21s =========================
 ```
 
 ---
