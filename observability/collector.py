@@ -176,7 +176,7 @@ class MetricsCollector:
         s = self.series(name)
         if s is None:
             return []
-        cutoff = __import__("time").time() - window
+        cutoff = time.time() - window
         return [m for m in s if m.timestamp >= cutoff]
 
     def __repr__(self) -> str:
